@@ -1,0 +1,13 @@
+# Ignore large files and folders
+*.gguf
+*.bin
+*.exe
+*.zip
+*.pdf
+*.dll
+*.pyd
+*.wasm
+backend/models/
+pdfs/
+public/models/
+node_modules/

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lablinker AI</title>
+  <link rel="manifest" href="manifest.json" />
+</head>
+<body>
+  <h1>Ask Lablinker AI</h1>
+
+  <input type="text" id="queryInput" placeholder="Type your question here" style="width: 300px;" />
+  <button onclick="askAI()">Ask</button>
+
+  <p id="translatedQuery"></p>
+  <pre id="responseOutput" style="background:#f0f0f0; padding:10px; width: 400px; height: 150px; overflow-y: auto;"></pre>
+
+  <script>
+    window.askAI = async function () {
+      const input = document.getElementById("queryInput").value;
+      const output = document.getElementById("responseOutput");
+      const queryBox = document.getElementById("translatedQuery");
+
+      queryBox.textContent = "⏳ Searching...";
+      output.textContent = "";
+
+      try {
+        const res = await fetch("http://localhost:5000/query", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: input }),
+        });
+
+        const data = await res.json();
+        output.textContent = data.answer;
+        queryBox.textContent = "✅ Answered using local AI";
+      } catch (err) {
+        console.error(err);
+        output.textContent = "❌ Failed to get answer from AI.";
+        queryBox.textContent = "❌ Error occurred.";
+      }
+    };
+
+    // Register the service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('✅ Service worker registered'))
+        .catch(err => console.error('❌ Service worker registration failed', err));
+    }
+  </script>
+</body>
+</html>
